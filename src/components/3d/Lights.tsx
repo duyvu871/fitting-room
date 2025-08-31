@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 /**
  * Lights – kết hợp preset "anti-chói lưng" với màu nền interior
@@ -7,24 +7,24 @@
  * - Ánh sáng dịu, trung tính (studio interior)
  */
 
-import * as THREE from 'three'
-import { Environment, Lightformer, ContactShadows } from '@react-three/drei'
-import { useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import * as THREE from 'three';
+import { Environment, Lightformer, ContactShadows } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
+import { useEffect } from 'react';
 
 // Giảm envMapIntensity toàn cục (IBL dịu → lưng không bị sáng quá)
 function DampEnvMapIntensity({ value = 0.55 }: { value?: number }) {
-  const { scene } = useThree()
+  const { scene } = useThree();
   useEffect(() => {
-    scene.traverse((o: any) => {
-      if (o?.isMesh) {
-        const m = o.material
-        if (Array.isArray(m)) m.forEach((mm) => (mm.envMapIntensity = value))
-        else if (m) m.envMapIntensity = value
+    scene.traverse((o) => {
+      if (o instanceof THREE.Mesh) {
+        const m = o.material;
+        if (Array.isArray(m)) m.forEach((mm) => (mm.envMapIntensity = value));
+        else if (m) m.envMapIntensity = value;
       }
-    })
-  }, [scene, value])
-  return null
+    });
+  }, [scene, value]);
+  return null;
 }
 
 export default function Lights() {
@@ -115,5 +115,5 @@ export default function Lights() {
         color="#000000"
       />
     </>
-  )
+  );
 }

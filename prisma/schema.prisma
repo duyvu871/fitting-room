@@ -127,3 +127,16 @@ model EmailVerification {
 
   @@map("email_verifications")
 }
+
+// Playground models for storing exported avatar configurations and metadata
+model Playground {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("playgrounds")
+}
