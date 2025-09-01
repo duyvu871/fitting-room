@@ -5,7 +5,7 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function PlaygroundPageLayout({ children }: DashboardLayoutProps) {
   // Require authentication for dashboard routes
   // await requireAuth();
 

@@ -5,25 +5,42 @@ import { showNotification } from '@mantine/notifications';
 import { modelVisibilityAtom, shapeKeysAtom, applyImportedConfigAtom } from 'app/store/playground';
 import { PlaygroundConfigSchema, type PlaygroundConfig } from 'app/sections/playground/schema';
 import type { ShapeKeyEntry } from 'app/store/playground';
+import { useCallback } from 'react';
 
+/**
+ * Get the current playground configuration from the atoms
+ */
+export function getCurrentConfig(
+  modelVisMap: Record<string, boolean>,
+  skMap: Record<string, ShapeKeyEntry[]>
+): PlaygroundConfig {
+  return {
+    timestamp: new Date().toISOString(),
+    version: '1.0',
+    modelInfo: Object.entries(modelVisMap).map(([name, visible]) => ({ name, visible })),
+    shapeKeys: Object.fromEntries(
+      Object.entries(skMap).map(([k, v]) => {
+        const entries = v as ShapeKeyEntry[];
+        const val = entries[0]?.mesh.morphTargetInfluences?.[entries[0].index] ?? 0;
+        return [k, val];
+      })
+    ),
+  };
+}
+
+/**
+ * Hook for playground configuration management
+ */
 export function usePlaygroundConfig() {
   const modelVisMap = useAtomValue(modelVisibilityAtom);
   const skMap = useAtomValue(shapeKeysAtom);
   const apply = useSetAtom(applyImportedConfigAtom);
 
+  /**
+   * Export the current config to a JSON file
+   */
   function exportConfig(): void {
-    const exportData: PlaygroundConfig = {
-      timestamp: new Date().toISOString(),
-      version: '1.0',
-      modelInfo: Object.entries(modelVisMap).map(([name, visible]) => ({ name, visible })),
-      shapeKeys: Object.fromEntries(
-        Object.entries(skMap).map(([k, v]) => {
-          const entries = v as ShapeKeyEntry[];
-          const val = entries[0]?.mesh.morphTargetInfluences?.[entries[0].index] ?? 0;
-          return [k, val];
-        })
-      ),
-    };
+    const exportData = getCurrentConfig(modelVisMap, skMap);
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -42,6 +59,9 @@ export function usePlaygroundConfig() {
     });
   }
 
+  /**
+   * Import a config from a file
+   */
   async function importConfigFile(file: File | null): Promise<void> {
     if (!file) return;
     const text = await file.text();
@@ -66,3 +86,6 @@ export function usePlaygroundConfig() {
 
   return { exportConfig, importConfigFile };
 }
+
+// useAutoSaveConfig hook has been moved to AutosaveProvider
+// This file now only contains the getCurrentConfig function and usePlaygroundConfig hook

@@ -4,11 +4,11 @@ import { PropsWithChildren, createContext, useContext, useEffect, useMemo } from
 import { playgroundIdAtom } from 'app/store/playground';
 import { useSetAtom } from 'jotai';
 
-interface PlaygroundContextType {
+export interface PlaygroundContextType {
   id: string;
 }
 
-const PlaygroundContext = createContext<PlaygroundContextType | undefined>(undefined);
+export const PlaygroundContext = createContext<PlaygroundContextType | undefined>(undefined);
 
 export default function PlaygroundProvider({ children, id }: PropsWithChildren<{ id: string }>) {
   const setJotaiPlaygroundId = useSetAtom(playgroundIdAtom);

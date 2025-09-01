@@ -1,3 +1,5 @@
+import { NewPlaygroundView } from 'app/sections/playground/view';
+
 export default function PlaygroundPage() {
-  return <div>PlaygroundPage</div>;
+  return <NewPlaygroundView />;
 }
